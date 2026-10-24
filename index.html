@@ -50,7 +50,7 @@ footer{font-size:11px;color:#7b8a8d;text-align:center;padding:14px 20px 22px}
 <div class="tabs"><button class="tab active" data-view="list">☷ Collection</button><button class="tab" data-view="map">⌖ Map</button><button class="tab" data-view="stats">▥ My stats</button></div>
 <div class="content" id="browseContent">
   <section class="panel list-panel" id="listPanel"><div class="panelhead"><div><h3>Places to discover</h3><div class="smallmuted" id="listSummary">Load an area to find nearby places</div></div><button class="softbtn" id="addBtn">＋ Add</button></div><div class="list" id="placeList"><div class="empty"><strong>Your collection starts here</strong>Choose “Load area” to find mapped places of worship, or add a place yourself.</div></div></section>
-  <section class="panel map-panel" id="mapPanel"><div class="panelhead"><div><h3>Explore the map</h3><div class="smallmuted">Select a marker to open a place</div></div><span class="chip">UK</span></div><div id="map"></div><div class="mapnote">Map © OpenStreetMap contributors · Place data from OpenStreetMap. Coverage and classifications may vary.</div></section>
+  <section class="panel map-panel" id="mapPanel"><div class="panelhead"><div><h3>Explore the map</h3><div class="smallmuted">Zoom in to see places; tap a marker to mark it Visited or To visit</div></div><span class="chip">UK</span></div><div id="map"></div><div class="mapnote">Zoom in to level 8 or closer to show church and worship-place markers. Tap a marker, then choose Visited or To visit. Your choice is saved in this browser. Map © OpenStreetMap contributors · Place data from OpenStreetMap.</div></section>
 </div>
 <section class="panel" id="statsPanel" style="display:none;margin-top:14px"><div class="panelhead"><div><h3>Your progress</h3><div class="smallmuted">Every visit adds to your personal collection</div></div></div><div style="padding:18px"><div style="display:flex;justify-content:space-between;gap:10px"><strong>Overall collection</strong><strong id="progressLabel">0 visited</strong></div><div class="progressbar"><span id="progressFill"></span></div><div class="faith-stats" id="faithStats"></div><p class="smallmuted" style="margin-top:18px">Progress is based on places you have loaded or added. It is not a count of every place of worship in the UK.</p></div></section>
 <section class="detail" id="detailPanel"><div class="detail-cover" id="detailCover">⛪</div><div class="detail-body"><div class="smallmuted" id="detailFaith">Christian · Church</div><h3 id="detailName">Place name</h3><div class="smallmuted" id="detailAddress"></div><div class="detail-actions"><button class="primary" id="visitToggle">✓ Mark as visited</button><button class="softbtn" id="favToggle">♡ Favourite</button><button class="softbtn" id="directionsBtn">↗ Directions</button></div><div id="visitFields" style="display:none"><label class="field" for="visitDate">Visit date</label><input type="date" id="visitDate"><label class="field" for="visitNotes">Visit notes</label><textarea id="visitNotes" placeholder="What did you notice? Add a memory…"></textarea><button class="primary" id="saveVisit" style="margin-top:10px">Save visit details</button></div><label class="field" for="placeNotes">Personal notes</label><textarea id="placeNotes" placeholder="Add notes about this place…"></textarea><button class="softbtn" id="saveNotes" style="margin-top:8px">Save notes</button></div></section>
@@ -58,7 +58,7 @@ footer{font-size:11px;color:#7b8a8d;text-align:center;padding:14px 20px 22px}
 <nav class="bottomnav"><button class="navbtn active" data-mobile="list"><span>☷</span>Collection</button><button class="navbtn" data-mobile="map"><span>⌖</span>Map</button><button class="navbtn" data-mobile="stats"><span>▥</span>Stats</button><button class="navbtn" data-mobile="more"><span>•••</span>More</button></nav>
 <footer>Theotect UK · Personal collection tracker · Your progress is saved in this browser.</footer>
 </div>
-<div class="modalback" id="modalBack"><div class="modal"><h3 id="modalTitle">Add a place</h3><p id="modalDesc">Add a dedicated place of worship to your personal collection.</p><form id="placeForm"><label for="newName">Place name *</label><input id="newName" required placeholder="e.g. St Mary's Church"><label for="newFaith">Faith</label><select id="newFaith"><option>Christian</option><option>Muslim</option><option>Hindu</option><option>Sikh</option><option>Jewish</option><option>Buddhist</option><option>Other</option></select><label for="newType">Building type</label><input id="newType" placeholder="e.g. Church, Mosque, Temple"><label for="newAddress">Town / address</label><input id="newAddress" placeholder="Town, county or postcode"><label for="newLat">Map coordinates (optional)</label><div style="display:flex;gap:8px"><input id="newLat" type="number" step="any" placeholder="Latitude"><input id="newLon" type="number" step="any" placeholder="Longitude"></div><div class="modalfoot"><button type="button" class="softbtn" id="cancelModal">Cancel</button><button class="primary" type="submit">Add to collection</button></div></form><div id="settingsArea" style="display:none"><p>Back up your visits and notes as a JSON file. Import a previous backup to restore your collection on this browser.</p><button class="primary" id="settingsExport">Export backup</button><label class="softbtn" style="display:block;text-align:center;margin-top:10px">Import backup JSON<input type="file" id="importFile" accept=".json,application/json" style="display:none"></label><p class="smallmuted">Privacy: your progress is stored locally in this browser. It is not synced to an account. Clearing browser data can erase it, so keep a backup.</p><div class="modalfoot"><button type="button" class="primary" id="closeSettings">Done</button></div></div></div></div>
+<div class="modalback" id="modalBack"><div class="modal"><h3 id="modalTitle">Add a place</h3><p id="modalDesc">Add a dedicated place of worship to your personal collection.</p><form id="placeForm"><label for="newName">Place name *</label><input id="newName" required placeholder="e.g. St Mary's Church"><label for="newFaith">Faith</label><select id="newFaith"><option>Christian</option><option>Muslim</option><option>Hindu</option><option>Sikh</option><option>Jewish</option><option>Buddhist</option><option>Other</option></select><label for="newType">Building type</label><input id="newType" placeholder="e.g. Church, Mosque, Temple"><label for="newAddress">Town / address</label><input id="newAddress" placeholder="Town, county or postcode"><label for="newLat">Map coordinates (optional)</label><div style="display:flex;gap:8px"><input id="newLat" type="number" step="any" placeholder="Latitude"><input id="newLon" type="number" step="any" placeholder="Longitude"></div><div class="modalfoot"><button type="button" class="softbtn" id="cancelModal">Cancel</button><button class="primary" type="submit">Add to collection</button></div></form><div id="settingsArea" style="display:none"><p>Back up your collection and map progress as a JSON file. Map markers let you save Visited or To visit status in this browser. Import a previous backup to restore it.</p><button class="primary" id="settingsExport">Export backup</button><label class="softbtn" style="display:block;text-align:center;margin-top:10px">Import backup JSON<input type="file" id="importFile" accept=".json,application/json" style="display:none"></label><p class="smallmuted">Privacy: your progress is stored locally in this browser. It is not synced to an account. Clearing browser data can erase it, so keep a backup.</p><div class="modalfoot"><button type="button" class="primary" id="closeSettings">Done</button></div></div></div></div>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 (() => {
@@ -66,6 +66,32 @@ const $ = id => document.getElementById(id);
 const KEY='TheotectUK_v1';
 const faithIcons={Christian:'✝',Muslim:'☪',Hindu:'ॐ️',Sikh:'☬',Jewish:'✡',Buddhist:'☸',Other:'⌂'};
 let places=[],selectedId=null,markers={},activeView='list',map;
+// Progress for the large regional map is stored separately from manually collected places.
+const MAP_PROGRESS_KEY = 'TheotectUK_mapProgress_v1';
+let mapProgress = {};
+let redrawGeoJSON = () => {};
+function loadMapProgress(){
+  try {
+    const saved = JSON.parse(localStorage.getItem(MAP_PROGRESS_KEY) || '{}');
+    mapProgress = saved && typeof saved === 'object' && !Array.isArray(saved) ? saved : {};
+  } catch (e) { mapProgress = {}; }
+}
+function saveMapProgress(){
+  try { localStorage.setItem(MAP_PROGRESS_KEY, JSON.stringify(mapProgress)); }
+  catch (e) { console.warn('Could not save map progress in this browser.', e); }
+}
+function mapFeatureKey(feature, props, item){
+  const stableId = props['@id'] || feature.id || props.osm_id || props.id;
+  if (stableId !== undefined && stableId !== null && String(stableId).trim()) return 'osm:' + String(stableId);
+  const name = props.name || props['name:en'] || 'unnamed';
+  return 'feature:' + [name, item.bounds.lat.toFixed(5), item.bounds.lon.toFixed(5)].join('|');
+}
+function setMapFeatureStatus(id, status){
+  if (!id || (status !== 'visited' && status !== 'to-visit')) return;
+  mapProgress[id] = status;
+  saveMapProgress();
+  renderStats();
+}
 function loadSaved(){try{const d=JSON.parse(localStorage.getItem(KEY)||'{}');places=Array.isArray(d.places)?d.places:[]}catch(e){places=[]}}
 function persist(){localStorage.setItem(KEY,JSON.stringify({places,version:1}));renderStats()}
 function uid(){return 'p_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,7)}
@@ -79,21 +105,40 @@ function renderList(){let ps=getFiltered();$('shownCount').textContent=ps.length
 $('placeList').innerHTML=ps.map(p=>`<div class="place ${p.id===selectedId?'selected':''}" data-id="${safe(p.id)}"><div class="place-icon">${faithIcons[p.faith]||'⌂'}</div><div class="place-info"><div class="place-title">${safe(p.name)}</div><div class="place-meta">${safe(p.faith)} · ${safe(p.type||'Place of worship')}</div><div class="place-meta">${safe(p.address||'Location not specified')}</div><div class="chips">${p.visited?'<span class="chip visited">✓ Visited'+(p.visitDate?' · '+safe(p.visitDate):'')+'</span>':'<span class="chip">To visit</span>'}${p.favourite?'<span class="chip">♥ Favourite</span>':''}</div></div><div class="place-end"><button class="tick ${p.visited?'done':''}" data-tick="${safe(p.id)}" title="${p.visited?'Mark unvisited':'Mark visited'}">${p.visited?'✓':'+'}</button><span>›</span></div></div>`).join('');
 $('placeList').querySelectorAll('.place').forEach(el=>el.addEventListener('click',e=>{if(e.target.closest('[data-tick]'))return;selectPlace(el.dataset.id)}));
 $('placeList').querySelectorAll('[data-tick]').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();toggleVisited(b.dataset.tick)}))}
-function renderStats(){let n=places.length,v=places.filter(p=>p.visited).length,f=places.filter(p=>p.favourite).length,pct=n?Math.round(v/n*100):0;$('visitedCount').textContent=v;$('savedCount').textContent=f;$('heroPct').textContent=pct+'%';$('progressLabel').textContent=v+' of '+n+' places visited';$('progressFill').style.width=pct+'%';$('faithStats').innerHTML=Object.keys(faithIcons).map(f=>{let total=places.filter(p=>p.faith===f).length,done=places.filter(p=>p.faith===f&&p.visited).length;return `<div class="faithrow"><span>${faithIcons[f]}</span><div><div>${f}<span class="smallmuted"> · ${done}/${total}</span></div><div class="bar"><span style="width:${total?done/total*100:0}%"></span></div></div><strong>${total?Math.round(done/total*100):0}%</strong></div>`}).join('');renderList()}
+function renderStats(){let n=places.length,v=places.filter(p=>p.visited).length,f=places.filter(p=>p.favourite).length,mapVisited=Object.values(mapProgress).filter(s=>s==='visited').length,pct=n?Math.round(v/n*100):0;$('visitedCount').textContent=v+mapVisited;$('savedCount').textContent=f;$('heroPct').textContent=pct+'%';$('progressLabel').textContent=v+' of '+n+' places visited';$('progressFill').style.width=pct+'%';$('faithStats').innerHTML=Object.keys(faithIcons).map(f=>{let total=places.filter(p=>p.faith===f).length,done=places.filter(p=>p.faith===f&&p.visited).length;return `<div class="faithrow"><span>${faithIcons[f]}</span><div><div>${f}<span class="smallmuted"> · ${done}/${total}</span></div><div class="bar"><span style="width:${total?done/total*100:0}%"></span></div></div><strong>${total?Math.round(done/total*100):0}%</strong></div>`}).join('');renderList()}
 function renderMarkers(){if(!map)return;Object.values(markers).forEach(m=>map.removeLayer(m));markers={};places.forEach(p=>{if(!Number.isFinite(p.lat)||!Number.isFinite(p.lon))return;let icon=L.divIcon({className:'',html:`<div style="width:30px;height:30px;border-radius:50% 50% 50% 5px;transform:rotate(-45deg);background:${p.visited?'#087f69':'#fff'};border:2px solid ${p.visited?'#087f69':'#426a70'};box-shadow:0 2px 7px #1234;display:grid;place-items:center"><span style="transform:rotate(45deg);font-size:14px;color:${p.visited?'white':'#234a52'}">${p.visited?'✓':(faithIcons[p.faith]||'⌂')}</span></div>`,iconSize:[30,30],iconAnchor:[15,30]});let m=L.marker([p.lat,p.lon],{icon}).addTo(map).bindTooltip(safe(p.name));m.on('click',()=>selectPlace(p.id));markers[p.id]=m})}
 function selectPlace(id){let p=places.find(p=>p.id===id);if(!p)return;selectedId=id;$('detailPanel').classList.add('show');$('detailCover').textContent=faithIcons[p.faith]||'⌂';$('detailName').textContent=p.name;$('detailFaith').textContent=p.faith+' · '+(p.type||'Place of worship');$('detailAddress').textContent=p.address||'Address not available';$('visitToggle').textContent=p.visited?'✓ Mark as not visited':'✓ Mark as visited';$('visitToggle').classList.toggle('softbtn',p.visited);$('visitToggle').classList.toggle('primary',!p.visited);$('favToggle').textContent=p.favourite?'♥ In favourites':'♡ Add to favourites';$('visitFields').style.display=p.visited?'block':'none';$('visitDate').value=p.visitDate||new Date().toISOString().slice(0,10);$('visitNotes').value=p.visitNotes||'';$('placeNotes').value=p.notes||'';renderList();if(p.lat&&map&&window.innerWidth<781){setView('map');map.setView([p.lat,p.lon],Math.max(map.getZoom(),13))}else if(p.lat&&map)map.setView([p.lat,p.lon],Math.max(map.getZoom(),13))}
 function toggleVisited(id){let p=places.find(p=>p.id===id);if(!p)return;p.visited=!p.visited;if(p.visited&&!p.visitDate)p.visitDate=new Date().toISOString().slice(0,10);persist();renderList();renderMarkers();if(selectedId===id)selectPlace(id)}
 function setView(v){activeView=v;document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.view===v));document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('active',b.dataset.mobile===v));$('statsPanel').style.display=v==='stats'?'block':'none';$('browseContent').style.display=v==='stats'?'none':'grid';$('mapPanel').classList.toggle('mobile-show',v==='map');$('listPanel').classList.toggle('mobile-hide',v==='map');if(v==='stats')renderStats();if(v==='map'&&map)setTimeout(()=>map.invalidateSize(),80)}
-function exportData(){let blob=new Blob([JSON.stringify({app:'Theotect UK',version:1,exported:new Date().toISOString(),places},null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='theotect-uk-backup.json';a.click();URL.revokeObjectURL(a.href)}
+function exportData(){let blob=new Blob([JSON.stringify({app:'Theotect UK',version:2,exported:new Date().toISOString(),places,mapProgress},null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='theotect-uk-backup.json';a.click();URL.revokeObjectURL(a.href)}
 function modal(show,settings=false){$('modalBack').classList.toggle('open',show);$('placeForm').style.display=settings?'none':'block';$('settingsArea').style.display=settings?'block':'none';$('modalTitle').textContent=settings?'Settings & backup':'Add a place';$('modalDesc').textContent=settings?'Keep a safe copy of your collection.':'Add a dedicated place of worship to your personal collection.'}
 async function loadArea(){if(!map)return;let b=map.getBounds(),z=map.getZoom();if(z<9){alert('Zoom in a little closer before loading places. This keeps the search manageable.');return}let query=`[out:json][timeout:35];(node["amenity"="place_of_worship"](${b.getSouth()},${b.getWest()},${b.getNorth()},${b.getEast()});way["amenity"="place_of_worship"](${b.getSouth()},${b.getWest()},${b.getNorth()},${b.getEast()});relation["amenity"="place_of_worship"](${b.getSouth()},${b.getWest()},${b.getNorth()},${b.getEast()}););out center tags;`;$('loadBtn').disabled=true;$('loadBtn').textContent='Loading…';try{let res=await fetch('https://overpass-api.de/api/interpreter',{method:'POST',body:query});if(!res.ok)throw Error('Map data service returned '+res.status);let data=await res.json(),before=places.length;data.elements.forEach(addOSM);persist();renderMarkers();renderList();alert(`Loaded ${places.length-before} new places in this map area. OpenStreetMap coverage may be incomplete; check for duplicates or missing details.`)}catch(e){alert('Could not load map data right now. Try again later, or add a place manually. Details: '+e.message)}finally{$('loadBtn').disabled=false;$('loadBtn').textContent='↻ Load area'}}
 $('loadBtn').addEventListener('click',loadArea);$('search').addEventListener('input',renderList);$('faithFilter').addEventListener('change',renderList);$('statusFilter').addEventListener('change',renderList);
 document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>setView(b.dataset.view)));document.querySelectorAll('.navbtn').forEach(b=>b.addEventListener('click',()=>{let v=b.dataset.mobile;if(v==='more'){modal(true,true);return}setView(v)}));
 $('addBtn').addEventListener('click',()=>modal(true));$('cancelModal').addEventListener('click',()=>modal(false));$('settingsBtn').addEventListener('click',()=>modal(true,true));$('exportBtn').addEventListener('click',exportData);$('settingsExport').addEventListener('click',exportData);$('closeSettings').addEventListener('click',()=>modal(false));$('modalBack').addEventListener('click',e=>{if(e.target===$('modalBack'))modal(false)});
 $('placeForm').addEventListener('submit',e=>{e.preventDefault();let name=$('newName').value.trim();if(!name)return;let lat=$('newLat').value===''?null:Number($('newLat').value),lon=$('newLon').value===''?null:Number($('newLon').value);let p={id:uid(),name,faith:$('newFaith').value,type:$('newType').value.trim()||'Place of worship',address:$('newAddress').value.trim(),lat,lon,source:'Manual',visited:false,favourite:false,visitDate:'',visitNotes:'',notes:''};places.push(p);persist();renderMarkers();renderList();modal(false);$('placeForm').reset();selectPlace(p.id)});
-$('importFile').addEventListener('change',async e=>{let file=e.target.files[0];if(!file)return;try{let d=JSON.parse(await file.text()),incoming=Array.isArray(d)?d:d.places;if(!Array.isArray(incoming))throw Error('This file does not contain a places list.');let mapById=new Map(places.map(p=>[p.id,p]));incoming.forEach(p=>{if(p&&p.id)mapById.set(p.id,{...mapById.get(p.id),...p})});places=[...mapById.values()];persist();renderMarkers();renderList();alert('Backup imported.')}catch(err){alert('Could not import that file: '+err.message)}e.target.value=''});
+$('importFile').addEventListener('change',async e=>{let file=e.target.files[0];if(!file)return;try{let d=JSON.parse(await file.text()),incoming=Array.isArray(d)?d:d.places;if(!Array.isArray(incoming))throw Error('This file does not contain a places list.');if(d&&d.mapProgress&&typeof d.mapProgress==='object'&&!Array.isArray(d.mapProgress)){mapProgress={...mapProgress,...d.mapProgress};saveMapProgress();}let mapById=new Map(places.map(p=>[p.id,p]));incoming.forEach(p=>{if(p&&p.id)mapById.set(p.id,{...mapById.get(p.id),...p})});places=[...mapById.values()];persist();renderMarkers();renderList();alert('Backup imported.')}catch(err){alert('Could not import that file: '+err.message)}e.target.value=''});
 $('visitToggle').addEventListener('click',()=>{if(!selectedId)return;toggleVisited(selectedId)});$('favToggle').addEventListener('click',()=>{let p=places.find(p=>p.id===selectedId);if(p){p.favourite=!p.favourite;persist();renderList();selectPlace(p.id)}});$('saveVisit').addEventListener('click',()=>{let p=places.find(p=>p.id===selectedId);if(p){p.visitDate=$('visitDate').value;p.visitNotes=$('visitNotes').value;persist();renderList();alert('Visit details saved.')}});$('saveNotes').addEventListener('click',()=>{let p=places.find(p=>p.id===selectedId);if(p){p.notes=$('placeNotes').value;persist();alert('Notes saved.')}});$('directionsBtn').addEventListener('click',()=>{let p=places.find(p=>p.id===selectedId);if(p&&Number.isFinite(p.lat)&&Number.isFinite(p.lon))window.open(`https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lon}`,'_blank','noopener');else if(p)window.open('https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(p.name+' '+p.address),'_blank','noopener')});
 loadSaved();
+loadMapProgress();
+document.addEventListener('click', e => {
+  const button = e.target.closest('button[data-theotect-id][data-theotect-status]');
+  if (!button) return;
+  e.preventDefault();
+  e.stopPropagation();
+  setMapFeatureStatus(button.dataset.theotectId, button.dataset.theotectStatus);
+  const label = button.dataset.theotectStatus === 'visited' ? 'Visited' : 'To visit';
+  const popup = button.closest('.leaflet-popup-content');
+  if (popup) {
+    const statusLine = popup.querySelector('div div strong');
+    if (statusLine) statusLine.textContent = label;
+    popup.querySelectorAll('button[data-theotect-status]').forEach(b => {
+      const active = b.dataset.theotectStatus === button.dataset.theotectStatus;
+      b.style.background = active ? (b.dataset.theotectStatus === 'visited' ? '#087f69' : '#173d4d') : (b.dataset.theotectStatus === 'visited' ? '#e2f3ed' : '#f0f3f2');
+      b.style.color = active ? '#fff' : '#183744';
+    });
+  }
+});
 if (window.L) {
   map = L.map('map').setView([54.5, -3.1], 6);
 
@@ -200,19 +245,22 @@ L.tileLayer(
       const feature = item.feature;
       const props = feature.properties || {};
       const name = props.name || props['name:en'] || 'Unnamed place of worship';
-      const popup = `<strong>${safe(name)}</strong>`;
-      const type = feature.geometry && feature.geometry.type;
-
-      if (detailed && type && type !== 'Point' && type !== 'MultiPoint') {
+      const id = mapFeatureKey(feature, props, item);
+      const status = mapProgress[id] || 'to-visit';
+      const faith = (props.denomination || props.religion || 'Faith not specified').replace(/_/g, ' ');
+      const popup = `<div style="min-width:190px"><strong>${safe(name)}</strong><div style="font-size:12px;color:#52686d;margin:4px 0 8px">${safe(faith)}</div><div style="font-size:12px;margin-bottom:7px">Status: <strong>${status === 'visited' ? 'Visited' : 'To visit'}</strong></div><div style="display:flex;gap:6px"><button type="button" data-theotect-id="${safe(id)}" data-theotect-status="visited" style="border:0;border-radius:7px;padding:7px 9px;background:${status === 'visited' ? '#087f69' : '#e2f3ed'};color:${status === 'visited' ? '#fff' : '#183744'}">✓ Visited</button><button type="button" data-theotect-id="${safe(id)}" data-theotect-status="to-visit" style="border:0;border-radius:7px;padding:7px 9px;background:${status === 'to-visit' ? '#173d4d' : '#f0f3f2'};color:${status === 'to-visit' ? '#fff' : '#183744'}">To visit</button></div></div>`;
+      const popupOptions = { maxWidth: 280 };
+      if (detailed && feature.geometry && feature.geometry.type && feature.geometry.type !== 'Point' && feature.geometry.type !== 'MultiPoint') {
         L.geoJSON(feature, {
           style: { color: '#087f69', weight: 1, fillColor: '#49a58f', fillOpacity: 0.18 },
           pointToLayer: (f, latlng) => L.circleMarker(latlng, { radius: 4, color: '#087f69' })
-        }).bindPopup(popup).addTo(geoLayer);
+        }).bindPopup(popup, popupOptions).addTo(geoLayer);
       } else {
         L.circleMarker([item.bounds.lat, item.bounds.lon], {
           radius: zoom >= 11 ? 4 : 3,
-          color: '#087f69', weight: 1, fillColor: '#e2f3ed', fillOpacity: 0.9
-        }).bindPopup(popup).addTo(geoLayer);
+          color: status === 'visited' ? '#087f69' : '#426a70', weight: status === 'visited' ? 2 : 1,
+          fillColor: status === 'visited' ? '#087f69' : '#e2f3ed', fillOpacity: 0.9
+        }).bindPopup(popup, popupOptions).addTo(geoLayer);
       }
     });
 
@@ -228,6 +276,7 @@ L.tileLayer(
     });
   }
 
+  redrawGeoJSON = scheduleGeoJSONRedraw;
   map.on('moveend zoomend', () => {
     loadRegionsForView();
     scheduleGeoJSONRedraw();
