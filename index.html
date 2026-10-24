@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#173d4d">
+<title>Theotect UK</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+:root{--ink:#183744;--muted:#6c7d83;--teal:#087f69;--teal2:#e2f3ed;--paper:#f5f7f5;--line:#e1e8e5;--white:#fff;--gold:#d59b37;--shadow:0 8px 28px #18374412}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.4 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer} .app{max-width:1180px;margin:auto;min-height:100dvh;display:flex;flex-direction:column}
+header{position:sticky;top:0;z-index:500;background:#173d4df5;color:#fff;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;box-shadow:0 2px 12px #122e3822}
+.brand{display:flex;align-items:center;gap:10px}.brand-mark{width:40px;height:40px;border-radius:13px;background:#e5f4ed;color:#087f69;display:grid;place-items:center;font-size:23px}.brand h1{font-family:Georgia,serif;font-size:21px;font-weight:600;margin:0;letter-spacing:.1px}.brand small{display:block;color:#c5d9d8;font-size:11px;letter-spacing:.12em;text-transform:uppercase;margin-top:1px}
+.head-actions{display:flex;gap:8px}.iconbtn{border:1px solid #ffffff35;background:#ffffff12;color:#fff;border-radius:12px;padding:9px 11px}
+main{padding:18px;flex:1}.hero{background:linear-gradient(120deg,#173d4d,#276d6c);color:#fff;border-radius:20px;padding:22px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:16px}.hero h2{font:600 25px/1.12 Georgia,serif;margin:0 0 8px}.hero p{margin:0;color:#d5e7e4;max-width:560px}.hero-stat{min-width:95px;text-align:center;border-left:1px solid #ffffff30;padding-left:18px}.hero-stat strong{font-size:29px;display:block}.hero-stat span{font-size:11px;color:#d5e7e4;text-transform:uppercase;letter-spacing:.08em}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}.stat{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px;box-shadow:var(--shadow)}.stat .n{font-size:25px;font-weight:750;letter-spacing:-.03em}.stat .l{font-size:12px;color:var(--muted);margin-top:3px}
+.toolbar{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-bottom:12px}.search{flex:1;min-width:190px;position:relative}.search input{width:100%;border:1px solid var(--line);background:#fff;border-radius:13px;padding:12px 14px 12px 38px;outline:none}.search:before{content:"⌕";position:absolute;left:14px;top:7px;font-size:23px;color:var(--muted)}select,.softbtn{border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:12px;padding:11px 12px}.softbtn.active{background:var(--teal2);border-color:#a4d6c8;color:var(--teal)}.primary{background:var(--teal);color:#fff;border:0;border-radius:12px;padding:11px 15px;font-weight:650}.primary:hover{background:#066b59}
+.tabs{display:flex;gap:6px;padding:5px;background:#e8eeeb;border-radius:13px;width:max-content;margin-bottom:12px}.tab{border:0;background:transparent;color:#61747a;border-radius:10px;padding:9px 15px;font-weight:650}.tab.active{background:#fff;color:var(--teal);box-shadow:0 2px 8px #18374412}
+.content{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(330px,.95fr);gap:14px;align-items:stretch}.panel{background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden;min-width:0}.panelhead{padding:15px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:8px}.panelhead h3{font:600 18px Georgia,serif;margin:0}.smallmuted{color:var(--muted);font-size:12px}
+#map{height:560px;width:100%;background:#dbe9e7}.mapnote{font-size:11px;color:var(--muted);padding:8px 12px;border-top:1px solid var(--line)}
+.list{max-height:560px;overflow:auto}.place{padding:13px 14px;display:flex;gap:12px;border-bottom:1px solid #edf1ef;cursor:pointer;transition:background .12s}.place:hover{background:#f7faf8}.place.selected{background:#eaf6f1}.place-icon{width:54px;height:58px;flex:0 0 54px;border-radius:12px;background:#e9f0ed;display:grid;place-items:center;font-size:25px}.place-info{min-width:0;flex:1}.place-title{font-weight:700;margin:1px 0 3px;line-height:1.2}.place-meta{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.chips{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:8px}.chip{font-size:11px;border-radius:20px;padding:4px 8px;background:#f0f3f2;color:#52686d}.chip.visited{background:#dff3e9;color:#087f69;font-weight:700}.place-end{display:flex;flex-direction:column;align-items:flex-end;justify-content:space-between;gap:8px;color:#6f8388}.tick{border:1px solid #bdd1ca;background:#fff;color:var(--teal);width:30px;height:30px;border-radius:50%;font-size:16px}.tick.done{background:var(--teal);color:white;border-color:var(--teal)}
+.detail{display:none;background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden;margin-top:14px}.detail.show{display:block}.detail-cover{height:150px;background:linear-gradient(135deg,#d9e7e2,#9bbdb2);display:flex;align-items:center;justify-content:center;font-size:64px}.detail-body{padding:18px}.detail-body h3{font:600 24px Georgia,serif;margin:0 0 5px}.detail-actions{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}.detail-actions button{flex:1;min-width:120px}.field{display:block;margin:12px 0 5px;font-size:12px;font-weight:700;color:#50676d}.detail textarea,.detail input{width:100%;border:1px solid var(--line);border-radius:10px;padding:10px;outline-color:#8bcab7}.detail textarea{min-height:74px;resize:vertical}
+.progressbar{height:8px;background:#e9efec;border-radius:99px;overflow:hidden;margin-top:10px}.progressbar span{height:100%;display:block;background:var(--teal);width:0%;transition:width .2s}.faith-stats{display:grid;gap:10px;margin-top:16px}.faithrow{display:grid;grid-template-columns:24px 1fr auto;gap:8px;align-items:center;font-size:13px}.faithrow .bar{height:6px;background:#edf1ef;border-radius:10px;overflow:hidden;margin-top:4px}.faithrow .bar span{display:block;height:100%;background:#399a83}
+.empty{padding:35px 20px;text-align:center;color:var(--muted)}.empty strong{display:block;color:var(--ink);margin-bottom:5px}.bottomnav{display:none;position:sticky;bottom:0;background:#fff;border-top:1px solid var(--line);padding:7px 8px calc(7px + env(safe-area-inset-bottom));z-index:600;grid-template-columns:repeat(4,1fr)}.navbtn{border:0;background:none;color:#7a8a8d;padding:6px 0;font-size:11px}.navbtn span{display:block;font-size:19px;margin-bottom:2px}.navbtn.active{color:var(--teal);font-weight:750}
+.modalback{position:fixed;inset:0;background:#102b35a8;z-index:900;display:none;align-items:center;justify-content:center;padding:16px}.modalback.open{display:flex}.modal{width:min(560px,100%);max-height:90dvh;overflow:auto;background:#fff;border-radius:20px;padding:20px}.modal h3{font:600 23px Georgia,serif;margin:0 0 8px}.modal p{color:var(--muted);font-size:13px}.modal label{display:block;font-size:12px;font-weight:700;margin:13px 0 5px}.modal input,.modal select{width:100%;padding:11px;border:1px solid var(--line);border-radius:10px}.modalfoot{display:flex;gap:8px;justify-content:flex-end;margin-top:18px}
+footer{font-size:11px;color:#7b8a8d;text-align:center;padding:14px 20px 22px}
+@media(max-width:780px){main{padding:12px 12px 88px}.hero{padding:18px;border-radius:17px}.hero h2{font-size:22px}.hero-stat{min-width:70px;padding-left:12px}.hero-stat strong{font-size:25px}.stats{gap:7px}.stat{padding:11px}.stat .n{font-size:22px}.content{grid-template-columns:1fr}.map-panel{display:none}.map-panel.mobile-show{display:block}.list-panel{display:block}.list-panel.mobile-hide{display:none}.list{max-height:none}.content{display:block}.bottomnav{display:grid}.tabs{display:none}header{padding:11px 13px}.brand h1{font-size:19px}.head-actions .labelbtn{display:none}#map{height:52dvh;min-height:300px}.detail{margin-top:12px}.hero p{font-size:13px}}
+@media(min-width:781px){.bottomnav{display:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <div class="brand"><div class="brand-mark">⌂</div><div><h1>Theotect UK</h1><small>Explore · Visit · Collect</small></div></div>
+  <div class="head-actions"><button class="iconbtn labelbtn" id="exportBtn">↥ Export</button><button class="iconbtn" id="settingsBtn" aria-label="Settings">⚙</button></div>
+</header>
+<main>
+<section class="hero"><div><h2>Your UK places of worship collection</h2><p>Discover dedicated places of worship, mark the places you’ve visited, and build your own collection across the UK.</p></div><div class="hero-stat"><strong id="heroPct">0%</strong><span>collected</span></div></section>
+<section class="stats">
+  <div class="stat"><div class="n" id="visitedCount">0</div><div class="l">Places visited</div></div>
+  <div class="stat"><div class="n" id="savedCount">0</div><div class="l">Favourites</div></div>
+  <div class="stat"><div class="n" id="shownCount">—</div><div class="l">Places in view</div></div>
+</section>
+<div class="toolbar">
+  <div class="search"><input id="search" placeholder="Search place, town or postcode…" autocomplete="off"></div>
+  <select id="faithFilter" aria-label="Filter by faith"><option value="all">All faiths</option><option>Christian</option><option>Muslim</option><option>Hindu</option><option>Sikh</option><option>Jewish</option><option>Buddhist</option><option>Other</option></select>
+  <select id="statusFilter" aria-label="Filter by status"><option value="all">Visited + to visit</option><option value="unvisited">To visit</option><option value="visited">Visited</option><option value="favourite">Favourites</option></select>
+  <button class="softbtn" id="loadBtn">↻ Load area</button>
+</div>
+<div class="tabs"><button class="tab active" data-view="list">☷ Collection</button><button class="tab" data-view="map">⌖ Map</button><button class="tab" data-view="stats">▥ My stats</button></div>
+<div class="content" id="browseContent">
+  <section class="panel list-panel" id="listPanel"><div class="panelhead"><div><h3>Places to discover</h3><div class="smallmuted" id="listSummary">Load an area to find nearby places</div></div><button class="softbtn" id="addBtn">＋ Add</button></div><div class="list" id="placeList"><div class="empty"><strong>Your collection starts here</strong>Choose “Load area” to find mapped places of worship, or add a place yourself.</div></div></section>
+  <section class="panel map-panel" id="mapPanel"><div class="panelhead"><div><h3>Explore the map</h3><div class="smallmuted">Select a marker to open a place</div></div><span class="chip">UK</span></div><div id="map"></div><div class="mapnote">Map © OpenStreetMap contributors · Place data from OpenStreetMap. Coverage and classifications may vary.</div></section>
+</div>
+<section class="panel" id="statsPanel" style="display:none;margin-top:14px"><div class="panelhead"><div><h3>Your progress</h3><div class="smallmuted">Every visit adds to your personal collection</div></div></div><div style="padding:18px"><div style="display:flex;justify-content:space-between;gap:10px"><strong>Overall collection</strong><strong id="progressLabel">0 visited</strong></div><div class="progressbar"><span id="progressFill"></span></div><div class="faith-stats" id="faithStats"></div><p class="smallmuted" style="margin-top:18px">Progress is based on places you have loaded or added. It is not a count of every place of worship in the UK.</p></div></section>
+<section class="detail" id="detailPanel"><div class="detail-cover" id="detailCover">⛪</div><div class="detail-body"><div class="smallmuted" id="detailFaith">Christian · Church</div><h3 id="detailName">Place name</h3><div class="smallmuted" id="detailAddress"></div><div class="detail-actions"><button class="primary" id="visitToggle">✓ Mark as visited</button><button class="softbtn" id="favToggle">♡ Favourite</button><button class="softbtn" id="directionsBtn">↗ Directions</button></div><div id="visitFields" style="display:none"><label class="field" for="visitDate">Visit date</label><input type="date" id="visitDate"><label class="field" for="visitNotes">Visit notes</label><textarea id="visitNotes" placeholder="What did you notice? Add a memory…"></textarea><button class="primary" id="saveVisit" style="margin-top:10px">Save visit details</button></div><label class="field" for="placeNotes">Personal notes</label><textarea id="placeNotes" placeholder="Add notes about this place…"></textarea><button class="softbtn" id="saveNotes" style="margin-top:8px">Save notes</button></div></section>
+</main>
+<nav class="bottomnav"><button class="navbtn active" data-mobile="list"><span>☷</span>Collection</button><button class="navbtn" data-mobile="map"><span>⌖</span>Map</button><button class="navbtn" data-mobile="stats"><span>▥</span>Stats</button><button class="navbtn" data-mobile="more"><span>•••</span>More</button></nav>
+<footer>Theotect UK · Personal collection tracker · Your progress is saved in this browser.</footer>
+</div>
+<div class="modalback" id="modalBack"><div class="modal"><h3 id="modalTitle">Add a place</h3><p id="modalDesc">Add a dedicated place of worship to your personal collection.</p><form id="placeForm"><label for="newName">Place name *</label><input id="newName" required placeholder="e.g. St Mary's Church"><label for="newFaith">Faith</label><select id="newFaith"><option>Christian</option><option>Muslim</option><option>Hindu</option><option>Sikh</option><option>Jewish</option><option>Buddhist</option><option>Other</option></select><label for="newType">Building type</label><input id="newType" placeholder="e.g. Church, Mosque, Temple"><label for="newAddress">Town / address</label><input id="newAddress" placeholder="Town, county or postcode"><label for="newLat">Map coordinates (optional)</label><div style="display:flex;gap:8px"><input id="newLat" type="number" step="any" placeholder="Latitude"><input id="newLon" type="number" step="any" placeholder="Longitude"></div><div class="modalfoot"><button type="button" class="softbtn" id="cancelModal">Cancel</button><button class="primary" type="submit">Add to collection</button></div></form><div id="settingsArea" style="display:none"><p>Back up your visits and notes as a JSON file. Import a previous backup to restore your collection on this browser.</p><button class="primary" id="settingsExport">Export backup</button><label class="softbtn" style="display:block;text-align:center;margin-top:10px">Import backup JSON<input type="file" id="importFile" accept=".json,application/json" style="display:none"></label><p class="smallmuted">Privacy: your progress is stored locally in this browser. It is not synced to an account. Clearing browser data can erase it, so keep a backup.</p><div class="modalfoot"><button type="button" class="primary" id="closeSettings">Done</button></div></div></div></div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+(() => {
+const $ = id => document.getElementById(id);
+const KEY='TheotectUK_v1';
+const faithIcons={Christian:'✝',Muslim:'☪',Hindu:'ॐ️',Sikh:'☬',Jewish:'✡',Buddhist:'☸',Other:'⌂'};
+let places=[],selectedId=null,markers={},activeView='list',map;
+function loadSaved(){try{const d=JSON.parse(localStorage.getItem(KEY)||'{}');places=Array.isArray(d.places)?d.places:[]}catch(e){places=[]}}
+function persist(){localStorage.setItem(KEY,JSON.stringify({places,version:1}));renderStats()}
+function uid(){return 'p_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,7)}
+function safe(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function faithOf(tags={}){let v=((tags.religion||'')+' '+(tags.denomination||'')+' '+(tags.name||'')).toLowerCase();if(/muslim|islam/.test(v))return 'Muslim';if(/hindu/.test(v))return 'Hindu';if(/sikh/.test(v))return 'Sikh';if(/jew|synagogue/.test(v))return 'Jewish';if(/buddh/.test(v))return 'Buddhist';if(/christ|catholic|anglican|church|chapel|orthodox/.test(v))return 'Christian';return 'Other'}
+function typeOf(tags={}){let v=tags.place_of_worship||tags.building||'';let rel=(tags.religion||'').toLowerCase();if(tags.amenity==='place_of_worship') {if(rel==='muslim')return 'Mosque';if(rel==='hindu')return 'Temple';if(rel==='sikh')return 'Gurdwara';if(rel==='jewish')return 'Synagogue';if(rel==='buddhist')return 'Buddhist temple';}return v&&v!=='yes'?v.replace(/_/g,' '):({Christian:'Church',Muslim:'Mosque',Hindu:'Temple',Sikh:'Gurdwara',Jewish:'Synagogue',Buddhist:'Temple'}[faithOf(tags)]||'Place of worship')}
+function addrOf(t){return [t['addr:suburb'],t['addr:city']||t['addr:town']||t['addr:village'],t['addr:county']].filter(Boolean).join(', ')||t['addr:full']||''}
+function addOSM(el){let t=el.tags||{},name=t.name||t['name:en'];if(!name)return;let id='osm_'+el.type+'_'+el.id;if(places.some(p=>p.id===id))return;let lat=el.lat??el.center?.lat,lon=el.lon??el.center?.lon;if(!Number.isFinite(lat)||!Number.isFinite(lon))return;let faith=faithOf(t);places.push({id,name,faith,type:typeOf(t),address:addrOf(t),lat,lon,source:'OpenStreetMap',visited:false,favourite:false,visitDate:'',visitNotes:'',notes:'',tags:t})}
+function getFiltered(){let q=$('search').value.trim().toLowerCase(),faith=$('faithFilter').value,status=$('statusFilter').value;return places.filter(p=>(faith==='all'||p.faith===faith)&&(!q||[p.name,p.address,p.faith,p.type].join(' ').toLowerCase().includes(q))&&(status==='all'||status==='visited'&&p.visited||status==='unvisited'&&!p.visited||status==='favourite'&&p.favourite)).sort((a,b)=>Number(b.visited)-Number(a.visited)||a.name.localeCompare(b.name))}
+function renderList(){let ps=getFiltered();$('shownCount').textContent=ps.length;$('listSummary').textContent=ps.length+' places · '+ps.filter(p=>p.visited).length+' visited';if(!ps.length){$('placeList').innerHTML='<div class="empty"><strong>No places match these filters</strong>Try another faith or search, or add a place manually.</div>';return}
+$('placeList').innerHTML=ps.map(p=>`<div class="place ${p.id===selectedId?'selected':''}" data-id="${safe(p.id)}"><div class="place-icon">${faithIcons[p.faith]||'⌂'}</div><div class="place-info"><div class="place-title">${safe(p.name)}</div><div class="place-meta">${safe(p.faith)} · ${safe(p.type||'Place of worship')}</div><div class="place-meta">${safe(p.address||'Location not specified')}</div><div class="chips">${p.visited?'<span class="chip visited">✓ Visited'+(p.visitDate?' · '+safe(p.visitDate):'')+'</span>':'<span class="chip">To visit</span>'}${p.favourite?'<span class="chip">♥ Favourite</span>':''}</div></div><div class="place-end"><button class="tick ${p.visited?'done':''}" data-tick="${safe(p.id)}" title="${p.visited?'Mark unvisited':'Mark visited'}">${p.visited?'✓':'+'}</button><span>›</span></div></div>`).join('');
+$('placeList').querySelectorAll('.place').forEach(el=>el.addEventListener('click',e=>{if(e.target.closest('[data-tick]'))return;selectPlace(el.dataset.id)}));
+$('placeList').querySelectorAll('[data-tick]').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();toggleVisited(b.dataset.tick)}))}
+function renderStats(){let n=places.length,v=places.filter(p=>p.visited).length,f=places.filter(p=>p.favourite).length,pct=n?Math.round(v/n*100):0;$('visitedCount').textContent=v;$('savedCount').textContent=f;$('heroPct').textContent=pct+'%';$('progressLabel').textContent=v+' of '+n+' places visited';$('progressFill').style.width=pct+'%';$('faithStats').innerHTML=Object.keys(faithIcons).map(f=>{let total=places.filter(p=>p.faith===f).length,done=places.filter(p=>p.faith===f&&p.visited).length;return `<div class="faithrow"><span>${faithIcons[f]}</span><div><div>${f}<span class="smallmuted"> · ${done}/${total}</span></div><div class="bar"><span style="width:${total?done/total*100:0}%"></span></div></div><strong>${total?Math.round(done/total*100):0}%</strong></div>`}).join('');renderList()}
+function renderMarkers(){if(!map)return;Object.values(markers).forEach(m=>map.removeLayer(m));markers={};places.forEach(p=>{if(!Number.isFinite(p.lat)||!Number.isFinite(p.lon))return;let icon=L.divIcon({className:'',html:`<div style="width:30px;height:30px;border-radius:50% 50% 50% 5px;transform:rotate(-45deg);background:${p.visited?'#087f69':'#fff'};border:2px solid ${p.visited?'#087f69':'#426a70'};box-shadow:0 2px 7px #1234;display:grid;place-items:center"><span style="transform:rotate(45deg);font-size:14px;color:${p.visited?'white':'#234a52'}">${p.visited?'✓':(faithIcons[p.faith]||'⌂')}</span></div>`,iconSize:[30,30],iconAnchor:[15,30]});let m=L.marker([p.lat,p.lon],{icon}).addTo(map).bindTooltip(safe(p.name));m.on('click',()=>selectPlace(p.id));markers[p.id]=m})}
+function selectPlace(id){let p=places.find(p=>p.id===id);if(!p)return;selectedId=id;$('detailPanel').classList.add('show');$('detailCover').textContent=faithIcons[p.faith]||'⌂';$('detailName').textContent=p.name;$('detailFaith').textContent=p.faith+' · '+(p.type||'Place of worship');$('detailAddress').textContent=p.address||'Address not available';$('visitToggle').textContent=p.visited?'✓ Mark as not visited':'✓ Mark as visited';$('visitToggle').classList.toggle('softbtn',p.visited);$('visitToggle').classList.toggle('primary',!p.visited);$('favToggle').textContent=p.favourite?'♥ In favourites':'♡ Add to favourites';$('visitFields').style.display=p.visited?'block':'none';$('visitDate').value=p.visitDate||new Date().toISOString().slice(0,10);$('visitNotes').value=p.visitNotes||'';$('placeNotes').value=p.notes||'';renderList();if(p.lat&&map&&window.innerWidth<781){setView('map');map.setView([p.lat,p.lon],Math.max(map.getZoom(),13))}else if(p.lat&&map)map.setView([p.lat,p.lon],Math.max(map.getZoom(),13))}
+function toggleVisited(id){let p=places.find(p=>p.id===id);if(!p)return;p.visited=!p.visited;if(p.visited&&!p.visitDate)p.visitDate=new Date().toISOString().slice(0,10);persist();renderList();renderMarkers();if(selectedId===id)selectPlace(id)}
+function setView(v){activeView=v;document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.view===v));document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('active',b.dataset.mobile===v));$('statsPanel').style.display=v==='stats'?'block':'none';$('browseContent').style.display=v==='stats'?'none':'grid';$('mapPanel').classList.toggle('mobile-show',v==='map');$('listPanel').classList.toggle('mobile-hide',v==='map');if(v==='stats')renderStats();if(v==='map'&&map)setTimeout(()=>map.invalidateSize(),80)}
+function exportData(){let blob=new Blob([JSON.stringify({app:'Theotect UK',version:1,exported:new Date().toISOString(),places},null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='theotect-uk-backup.json';a.click();URL.revokeObjectURL(a.href)}
+function modal(show,settings=false){$('modalBack').classList.toggle('open',show);$('placeForm').style.display=settings?'none':'block';$('settingsArea').style.display=settings?'block':'none';$('modalTitle').textContent=settings?'Settings & backup':'Add a place';$('modalDesc').textContent=settings?'Keep a safe copy of your collection.':'Add a dedicated place of worship to your personal collection.'}
+async function loadArea(){if(!map)return;let b=map.getBounds(),z=map.getZoom();if(z<9){alert('Zoom in a little closer before loading places. This keeps the search manageable.');return}let query=`[out:json][timeout:35];(node["amenity"="place_of_worship"](${b.getSouth()},${b.getWest()},${b.getNorth()},${b.getEast()});way["amenity"="place_of_worship"](${b.getSouth()},${b.getWest()},${b.getNorth()},${b.getEast()});relation["amenity"="place_of_worship"](${b.getSouth()},${b.getWest()},${b.getNorth()},${b.getEast()}););out center tags;`;$('loadBtn').disabled=true;$('loadBtn').textContent='Loading…';try{let res=await fetch('https://overpass-api.de/api/interpreter',{method:'POST',body:query});if(!res.ok)throw Error('Map data service returned '+res.status);let data=await res.json(),before=places.length;data.elements.forEach(addOSM);persist();renderMarkers();renderList();alert(`Loaded ${places.length-before} new places in this map area. OpenStreetMap coverage may be incomplete; check for duplicates or missing details.`)}catch(e){alert('Could not load map data right now. Try again later, or add a place manually. Details: '+e.message)}finally{$('loadBtn').disabled=false;$('loadBtn').textContent='↻ Load area'}}
+$('loadBtn').addEventListener('click',loadArea);$('search').addEventListener('input',renderList);$('faithFilter').addEventListener('change',renderList);$('statusFilter').addEventListener('change',renderList);
+document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>setView(b.dataset.view)));document.querySelectorAll('.navbtn').forEach(b=>b.addEventListener('click',()=>{let v=b.dataset.mobile;if(v==='more'){modal(true,true);return}setView(v)}));
+$('addBtn').addEventListener('click',()=>modal(true));$('cancelModal').addEventListener('click',()=>modal(false));$('settingsBtn').addEventListener('click',()=>modal(true,true));$('exportBtn').addEventListener('click',exportData);$('settingsExport').addEventListener('click',exportData);$('closeSettings').addEventListener('click',()=>modal(false));$('modalBack').addEventListener('click',e=>{if(e.target===$('modalBack'))modal(false)});
+$('placeForm').addEventListener('submit',e=>{e.preventDefault();let name=$('newName').value.trim();if(!name)return;let lat=$('newLat').value===''?null:Number($('newLat').value),lon=$('newLon').value===''?null:Number($('newLon').value);let p={id:uid(),name,faith:$('newFaith').value,type:$('newType').value.trim()||'Place of worship',address:$('newAddress').value.trim(),lat,lon,source:'Manual',visited:false,favourite:false,visitDate:'',visitNotes:'',notes:''};places.push(p);persist();renderMarkers();renderList();modal(false);$('placeForm').reset();selectPlace(p.id)});
+$('importFile').addEventListener('change',async e=>{let file=e.target.files[0];if(!file)return;try{let d=JSON.parse(await file.text()),incoming=Array.isArray(d)?d:d.places;if(!Array.isArray(incoming))throw Error('This file does not contain a places list.');let mapById=new Map(places.map(p=>[p.id,p]));incoming.forEach(p=>{if(p&&p.id)mapById.set(p.id,{...mapById.get(p.id),...p})});places=[...mapById.values()];persist();renderMarkers();renderList();alert('Backup imported.')}catch(err){alert('Could not import that file: '+err.message)}e.target.value=''});
+$('visitToggle').addEventListener('click',()=>{if(!selectedId)return;toggleVisited(selectedId)});$('favToggle').addEventListener('click',()=>{let p=places.find(p=>p.id===selectedId);if(p){p.favourite=!p.favourite;persist();renderList();selectPlace(p.id)}});$('saveVisit').addEventListener('click',()=>{let p=places.find(p=>p.id===selectedId);if(p){p.visitDate=$('visitDate').value;p.visitNotes=$('visitNotes').value;persist();renderList();alert('Visit details saved.')}});$('saveNotes').addEventListener('click',()=>{let p=places.find(p=>p.id===selectedId);if(p){p.notes=$('placeNotes').value;persist();alert('Notes saved.')}});$('directionsBtn').addEventListener('click',()=>{let p=places.find(p=>p.id===selectedId);if(p&&Number.isFinite(p.lat)&&Number.isFinite(p.lon))window.open(`https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lon}`,'_blank','noopener');else if(p)window.open('https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(p.name+' '+p.address),'_blank','noopener')});
+loadSaved();
+if (window.L) {
+  map = L.map('map').setView([54.5, -3.1], 6);
+
+L.tileLayer(
+  'https://api.maptiler.com/maps/streets-v4/{z}/{x}/{y}.png?key=la86YZ4KgcKnSl3yPCnJ',
+  {
+    tileSize: 512,
+    zoomOffset: -1,
+    maxZoom: 20,
+    attribution:
+      '&copy; <a href="https://www.maptiler.com/copyright/">MapTiler</a> ' +
+      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>'
+  }
+).addTo(map);
+
+  // Load UK places of worship from theo_data.geojson
+    fetch('./theo_data.geojson')
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(
+          'Could not load theo_data.geojson. HTTP status: ' +
+          response.status
+        );
+      }
+      return response.json();
+    })
+    .then(geojson => {
+      const worshipLayer = L.geoJSON(geojson, {
+        pointToLayer: (feature, latlng) => {
+          return L.marker(latlng);
+        },
+
+        onEachFeature: (feature, layer) => {
+          const props = feature.properties || {};
+
+          const name =
+            props.name ||
+            props['name:en'] ||
+            'Unnamed place of worship';
+
+          const safeName = String(name).replace(/[&<>"']/g, char => ({
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#39;'
+          })[char]);
+
+          layer.bindPopup(`<strong>${safeName}</strong>`);
+        }
+      });
+
+      worshipLayer.addTo(map);
+
+      console.log(
+        'Places loaded:',
+        worshipLayer.getLayers().length
+      );
+    })
+    .catch(error => {
+      console.error('GeoJSON loading failed:', error);
+      alert(
+        'Could not load theo_data.geojson. ' +
+        'Check that it is in the same folder as the HTML file.'
+      );
+    });
+}
+})();
+</script>
+</body>
+</html>
