@@ -109,57 +109,130 @@ L.tileLayer(
   }
 ).addTo(map);
 
-  // Load UK places of worship from theo_data.geojson
-    fetch('./theo_data.geojson')
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(
-          'Could not load theo_data.geojson. HTTP status: ' +
-          response.status
-        );
+  // Load the UK dataset once, but only draw features in the current map view.
+  // Drawing every UK building at once makes the browser very slow.
+  let geoFeatures = [];
+  let geoLayer = L.layerGroup().addTo(map);
+  let geoRedrawPending = false;
+  const loadedGeoRegions = new Set();
+  const loadingGeoRegions = new Set();
+  const geoRegionDefs = [{"id":"south_east","file":"./data/theo_south_east.geojson","bounds":[-1.6498214,50.4352289,1.8553122,52.549982]},{"id":"midlands","file":"./data/theo_midlands.geojson","bounds":[-2.6998278,52.0511596,0.6499343,53.649900699999996]},{"id":"east_of_england","file":"./data/theo_east_of_england.geojson","bounds":[0.35014829999999997,52.250486800000004,1.9071679,53.115763199999996]},{"id":"scotland","file":"./data/theo_scotland.geojson","bounds":[-8.715197400000001,54.8500697,-0.6163451999999999,60.9476734]},{"id":"south_west","file":"./data/theo_south_west.geojson","bounds":[-5.349572,49.8187169,-1.3506472,52.349776999999996]},{"id":"north_east_yorkshire","file":"./data/theo_north_east_yorkshire.geojson","bounds":[-2.1479018,53.3501964,0.2651044,55.1485456]},{"id":"north_west","file":"./data/theo_north_west.geojson","bounds":[-5.2640327000000005,53.350118200000004,-1.8507571999999999,55.1496735]},{"id":"northern_ireland","file":"./data/theo_northern_ireland.geojson","bounds":[-8.2412882,49.7432056,-5.051118,55.1480388]},{"id":"wales","file":"./data/theo_wales.geojson","bounds":[-5.348326200000001,51.2383862,-2.4010891,53.7499642]}];
+
+  function getFeatureBounds(feature) {
+    if (Array.isArray(feature.bbox) && feature.bbox.length >= 4) {
+      const [minLon, minLat, maxLon, maxLat] = feature.bbox;
+      return { minLon, minLat, maxLon, maxLat,
+        lat: (minLat + maxLat) / 2, lon: (minLon + maxLon) / 2 };
+    }
+    let minLon = Infinity, minLat = Infinity, maxLon = -Infinity, maxLat = -Infinity;
+    function visit(coords) {
+      if (!Array.isArray(coords)) return;
+      if (coords.length >= 2 && typeof coords[0] === 'number' && typeof coords[1] === 'number') {
+        const lon = coords[0], lat = coords[1];
+        minLon = Math.min(minLon, lon); maxLon = Math.max(maxLon, lon);
+        minLat = Math.min(minLat, lat); maxLat = Math.max(maxLat, lat);
+      } else {
+        coords.forEach(visit);
       }
-      return response.json();
-    })
-    .then(geojson => {
-      const worshipLayer = L.geoJSON(geojson, {
-        pointToLayer: (feature, latlng) => {
-          return L.marker(latlng);
-        },
+    }
+    if (feature.geometry && feature.geometry.coordinates) visit(feature.geometry.coordinates);
+    if (![minLon, minLat, maxLon, maxLat].every(Number.isFinite)) return null;
+    return { minLon, minLat, maxLon, maxLat,
+      lat: (minLat + maxLat) / 2, lon: (minLon + maxLon) / 2 };
+  }
 
-        onEachFeature: (feature, layer) => {
-          const props = feature.properties || {};
+  function intersectsMapBounds(regionBounds, mapBounds) {
+    return regionBounds[2] >= mapBounds.getWest() &&
+      regionBounds[0] <= mapBounds.getEast() &&
+      regionBounds[3] >= mapBounds.getSouth() &&
+      regionBounds[1] <= mapBounds.getNorth();
+  }
 
-          const name =
-            props.name ||
-            props['name:en'] ||
-            'Unnamed place of worship';
+  function loadRegionsForView() {
+    if (!map || map.getZoom() < 8) return;
+    const view = map.getBounds();
+    geoRegionDefs.forEach(region => {
+      if (!intersectsMapBounds(region.bounds, view) ||
+          loadedGeoRegions.has(region.id) ||
+          loadingGeoRegions.has(region.id)) return;
 
-          const safeName = String(name).replace(/[&<>"']/g, char => ({
-            '&': '&amp;',
-            '<': '&lt;',
-            '>': '&gt;',
-            '"': '&quot;',
-            "'": '&#39;'
-          })[char]);
-
-          layer.bindPopup(`<strong>${safeName}</strong>`);
-        }
-      });
-
-      worshipLayer.addTo(map);
-
-      console.log(
-        'Places loaded:',
-        worshipLayer.getLayers().length
-      );
-    })
-    .catch(error => {
-      console.error('GeoJSON loading failed:', error);
-      alert(
-        'Could not load theo_data.geojson. ' +
-        'Check that it is in the same folder as the HTML file.'
-      );
+      loadingGeoRegions.add(region.id);
+      fetch(region.file)
+        .then(response => {
+          if (!response.ok) throw new Error('HTTP ' + response.status + ' loading ' + region.file);
+          return response.json();
+        })
+        .then(geojson => {
+          const features = geojson.type === 'Feature' ? [geojson] : geojson.features;
+          if (!Array.isArray(features)) throw new Error('Invalid GeoJSON in ' + region.file);
+          const prepared = features.map(feature => ({ feature, bounds: getFeatureBounds(feature) }))
+            .filter(item => item.bounds !== null);
+          geoFeatures.push(...prepared);
+          loadedGeoRegions.add(region.id);
+          console.log(`Loaded ${region.id}: ${prepared.length} features.`);
+          scheduleGeoJSONRedraw();
+        })
+        .catch(error => {
+          console.error('Regional GeoJSON loading failed:', error);
+          alert('Could not load ' + region.file + '. Check that the data folder is beside the HTML file.');
+        })
+        .finally(() => loadingGeoRegions.delete(region.id));
     });
+  }
+
+  function drawVisibleGeoJSON() {
+    if (!map) return;
+    const zoom = map.getZoom();
+    geoLayer.clearLayers();
+    if (zoom < 8) return;
+
+    const bounds = map.getBounds();
+    const west = bounds.getWest(), east = bounds.getEast();
+    const south = bounds.getSouth(), north = bounds.getNorth();
+    const visible = geoFeatures.filter(item =>
+      item.bounds.maxLon >= west && item.bounds.minLon <= east &&
+      item.bounds.maxLat >= south && item.bounds.minLat <= north
+    );
+
+    const detailed = zoom >= 12;
+    const limit = detailed ? 700 : 600;
+    visible.slice(0, limit).forEach(item => {
+      const feature = item.feature;
+      const props = feature.properties || {};
+      const name = props.name || props['name:en'] || 'Unnamed place of worship';
+      const popup = `<strong>${safe(name)}</strong>`;
+      const type = feature.geometry && feature.geometry.type;
+
+      if (detailed && type && type !== 'Point' && type !== 'MultiPoint') {
+        L.geoJSON(feature, {
+          style: { color: '#087f69', weight: 1, fillColor: '#49a58f', fillOpacity: 0.18 },
+          pointToLayer: (f, latlng) => L.circleMarker(latlng, { radius: 4, color: '#087f69' })
+        }).bindPopup(popup).addTo(geoLayer);
+      } else {
+        L.circleMarker([item.bounds.lat, item.bounds.lon], {
+          radius: zoom >= 11 ? 4 : 3,
+          color: '#087f69', weight: 1, fillColor: '#e2f3ed', fillOpacity: 0.9
+        }).bindPopup(popup).addTo(geoLayer);
+      }
+    });
+
+    console.log(`Regional GeoJSON: showing ${Math.min(visible.length, limit)} of ${visible.length} visible loaded features.`);
+  }
+
+  function scheduleGeoJSONRedraw() {
+    if (geoRedrawPending) return;
+    geoRedrawPending = true;
+    requestAnimationFrame(() => {
+      geoRedrawPending = false;
+      drawVisibleGeoJSON();
+    });
+  }
+
+  map.on('moveend zoomend', () => {
+    loadRegionsForView();
+    scheduleGeoJSONRedraw();
+  });
+  loadRegionsForView();
 }
 })();
 </script>
